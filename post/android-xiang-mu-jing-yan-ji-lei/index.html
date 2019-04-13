@@ -1,0 +1,131 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android项目经验积累 | T</title>
+<link rel="shortcut icon" href="http://john6.ml/blog//favicon.ico">
+<link rel="stylesheet" href="http://john6.ml/blog//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="http://john6.ml/blog/">
+  <img class="avatar" src="http://john6.ml/blog//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    T
+  </h1>
+  <p class="site-description">
+    Believe that god is fair.
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Android项目经验积累
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-04-04 ·
+              </time>
+              
+            </div>
+            <div class="post-content">
+              <p>按照开发时间线整理记录<br>供个人学习提高参考</p>
+<!-- more -->
+<h2 id="1. 登陆成功后关闭登陆、注册页面">1. 登陆成功后关闭登陆、注册页面</h2><blockquote>
+<p>登陆页面可以跳转到主页<br>注册页面也可以跳转到主页<br>登陆页面可跳转到注册页面<br>但登陆-&gt;注册-&gt;主页 需要finish掉登录页</p>
+</blockquote>
+<pre><code>解决方案：
+    1. 发送广播
+            public class ActivityBoardCast extends BoardCast{
+                @Override
+                public  void onReceived(Intent intent){
+                    // Write your code here...
+                }
+            }
+    2. RxBus</code></pre><h2 id="2. 实现任意圆角功能">2. 实现任意圆角功能</h2><blockquote>
+<p>用popUpWindow自定义布局实现带圆角下拉列表功能<br>直接LinearLayout内嵌RecyclerView用View做辅助线<br>线会越过边界。</p>
+</blockquote>
+<pre><code>解决方案：
+使用`setOutlineProvider(new View OutlineProvider(){
+    @Override
+    public void getOutline(View view, Outline outline){
+        outline.setRoundRect(0,0,view.getWidth(),view.getHeight(),10);
+    }
+});`</code></pre><h2 id="3. switch三选一功能">3. switch三选一功能</h2><pre><code>&gt; 使用简单的逻辑判断即：
+&gt; 关闭-&gt;检查当前开启的Switch数量是否为0，是-&gt;打开，否-&gt;响应关闭操作
+&gt; 打开-&gt;检查其余Switch状态，有打开的-&gt;关闭并提示，无打开的-&gt;响应开启操作
+&gt; 测试在Android 5.0以下会出现可以同时打开多个或者全关闭的情况，逻辑失效
+解决方案：
+测试是Android 5.0及以后事件传递整个流程改变导致
+针对5.0以下版本设置开启或关闭Switch延迟100ms可以解决问题</code></pre><h2 id="4. 让子view完全处理它能响应的滑动操作">4. 让子View完全处理它能响应的滑动操作</h2><pre><code>&gt;ScrollView里面嵌入取色盘
+&gt;滑动时scrollView会获取焦点
+&gt;
+解决方案：
+    在子View 的OnTouch方法中使用requetDisallow</code></pre>
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="http://john6.ml/blog//post/android-qi-bu-chu-shi-rxjava">
+              <h3 class="post-title">
+                Android起步——初识RxJava
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

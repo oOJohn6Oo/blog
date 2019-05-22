@@ -70,129 +70,136 @@
               <ul>
 <li>Rx作用</li>
 <li>Rx基本用法</li>
-<li>使用Rx完成“发送验证码”功能<!--more-->
-</li>
+<li>使用Rx完成“发送验证码”功能</li>
 </ul>
-<hr>
+<h2 id="-more-"><!--more--></h2>
 <ol>
-<li><p>作用</p>
+<li>
+<p>作用</p>
 <blockquote>
-<p>Java</p>
-<pre><code> 1. 方便线程切换
- 2. 编程逻辑清楚（但到底他吗的Observable和Observer哪个是哪个？）</code></pre><p> Android</p>
-<pre><code> 1. 按钮防抖（防止用户一直点）
- 2. 当作通信管道</code></pre></blockquote>
+<p>Java
+1. 方便线程切换
+2. 编程逻辑清楚（但到底他吗的Observable和Observer哪个是哪个？）
+Android
+1. 按钮防抖（防止用户一直点）
+2. 当作通信管道</p>
+</blockquote>
 </li>
-<li><p>基本用法</p>
-<pre><code class="language-Java">  button = (Button) findViewById( R.id.bt ) ;
+<li>
+<p>基本用法</p>
+<pre><code class="language-Java"> button = (Button) findViewById( R.id.bt ) ;
 
-  RxView.clicks( button )
-          .throttleFirst( 2 , TimeUnit.SECONDS )   //两秒钟之内只取第一个点击事件，防抖操作
-          .subscribe(new Action1&lt;Void&gt;() {
-              @Override
-              public void call(Void aVoid) {
-                  Toast.makeText(MainActivity.this, &quot;点击&quot;, Toast.LENGTH_SHORT).show();
-              }
-          }) ;</code></pre>
-<pre><code class="language-Java">     RxBus.get().post(&quot;ClickAction&quot;,new String(&quot;I&#39;m stroke&quot;));
+ RxView.clicks( button )
+         .throttleFirst( 2 , TimeUnit.SECONDS )   //两秒钟之内只取第一个点击事件，防抖操作
+         .subscribe(new Action1&lt;Void&gt;() {
+             @Override
+             public void call(Void aVoid) {
+                 Toast.makeText(MainActivity.this, &quot;点击&quot;, Toast.LENGTH_SHORT).show();
+             }
+         }) ;
+</code></pre>
+<pre><code class="language-Java">	RxBus.get().post(&quot;ClickAction&quot;,new String(&quot;I'm stroke&quot;));
 
- @Subscribe(
-     Tag=&quot;ClickAction&quot;
- Thread = @thread{
- AndroidSchedule.MainThread,
- }
- )</code></pre>
-</li>
-<li><p>“发送验证码”功能</p>
-<pre><code class="language-Java">     package com.definesys.dmportal.main.view;
-     public class TextViewSendCode extends android.support.v7.widget.AppCompatTextView {
- private int msgTime;
- private boolean threadFlag;
- private String textDisplayed;
-
- public TextViewSendCode(Context context, AttributeSet attrs) {
-     super(context, attrs);
-     Resources resources = context.getResources();
-     setText(resources.getText(R.string.send_code));
-     setTextColor(resources.getColor(R.color.colorClickBlue));
-     setTextSize(14);
-     msgTime = getResources().getInteger(R.integer.code_send_time);
-     textDisplayed = getResources().getString(R.string.text_after_send_code);
- }
-
- /*
-     文本倒计时功能
-  */
- @SuppressLint(&quot;CheckResult&quot;)
- public void startCount() {
-     Observable.create((ObservableOnSubscribe&lt;Integer&gt;) emitter -&gt; {
-         int msgTimeBk = msgTime;       //复制当前设置的秒数
-         threadFlag = true;
-         //满足条件  循环 onNext
-         while (msgTimeBk &gt; 0 &amp;&amp; threadFlag) {
-             emitter.onNext(msgTimeBk--);
-             Thread.sleep(1000);
-         }
-         emitter.onComplete();
-     }).subscribeOn(Schedulers.io())
-             .doOnSubscribe(disposable -&gt; setEnabled(false))
-             .observeOn(AndroidSchedulers.mainThread())
-             .subscribe(new Observer&lt;Integer&gt;() {
-                 @Override
-                 public void onSubscribe(Disposable d) {
-                     //注册时
-                 }
-
-                 @Override
-                 public void onNext(Integer integer) {
-                     setText(getResources().getString(R.string.tut_toast_text_time,integer));
-                 }
-
-                 @Override
-                 public void onError(Throwable e) {
-                     //错误时
-                 }
-
-                 @Override
-                 public void onComplete() {
-                     setText(textDisplayed);
-                     setEnabled(true);
-                 }
-             });
- }
-
- /*
-     设置倒计时时长
-  */
- public void setMsgTime(int second) {
-     this.msgTime = second;
- }
-
- /*
-     手机号码校验
-  */
- public boolean checkPhoneNum(String phoneNum, Context context) {
-     return phoneNum.matches(context.getString(R.string.phone_regex));
- }
-
- /*
-     设置Flag
-  */
- public void stopCount() {
-     this.threadFlag = false;
- }
-
- /*
-     设置显示文本
-  */
- public void setTextDisplayed(String textDisplayed) {
-     this.textDisplayed = textDisplayed;
-     setText(textDisplayed);
- }
+@Subscribe(
+	Tag=&quot;ClickAction&quot;
+Thread = @thread{
+AndroidSchedule.MainThread,
 }
+)
 </code></pre>
 </li>
+<li>
+<p>“发送验证码”功能</p>
+</li>
 </ol>
+<pre><code class="language-Java">		package com.definesys.dmportal.main.view;
+		public class TextViewSendCode extends android.support.v7.widget.AppCompatTextView {
+    private int msgTime;
+    private boolean threadFlag;
+    private String textDisplayed;
+
+    public TextViewSendCode(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        Resources resources = context.getResources();
+        setText(resources.getText(R.string.send_code));
+        setTextColor(resources.getColor(R.color.colorClickBlue));
+        setTextSize(14);
+        msgTime = getResources().getInteger(R.integer.code_send_time);
+        textDisplayed = getResources().getString(R.string.text_after_send_code);
+    }
+
+    /*
+        文本倒计时功能
+     */
+    @SuppressLint(&quot;CheckResult&quot;)
+    public void startCount() {
+        Observable.create((ObservableOnSubscribe&lt;Integer&gt;) emitter -&gt; {
+            int msgTimeBk = msgTime;       //复制当前设置的秒数
+            threadFlag = true;
+            //满足条件  循环 onNext
+            while (msgTimeBk &gt; 0 &amp;&amp; threadFlag) {
+                emitter.onNext(msgTimeBk--);
+                Thread.sleep(1000);
+            }
+            emitter.onComplete();
+        }).subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -&gt; setEnabled(false))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer&lt;Integer&gt;() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        //注册时
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        setText(getResources().getString(R.string.tut_toast_text_time,integer));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //错误时
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        setText(textDisplayed);
+                        setEnabled(true);
+                    }
+                });
+    }
+
+    /*
+        设置倒计时时长
+     */
+    public void setMsgTime(int second) {
+        this.msgTime = second;
+    }
+
+    /*
+        手机号码校验
+     */
+    public boolean checkPhoneNum(String phoneNum, Context context) {
+        return phoneNum.matches(context.getString(R.string.phone_regex));
+    }
+
+    /*
+        设置Flag
+     */
+    public void stopCount() {
+        this.threadFlag = false;
+    }
+
+    /*
+        设置显示文本
+     */
+    public void setTextDisplayed(String textDisplayed) {
+        this.textDisplayed = textDisplayed;
+        setText(textDisplayed);
+    }
+}
+
+	```</code></pre>
 
             </div>
           </article>

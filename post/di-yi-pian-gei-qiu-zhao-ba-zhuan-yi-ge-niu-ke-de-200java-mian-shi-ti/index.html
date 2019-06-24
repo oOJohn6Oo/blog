@@ -70,46 +70,133 @@
               <h2 id="作者牛客vippiv原帖链接">作者：牛客—<code>vippiv</code>，<a href="https://www.nowcoder.com/discuss/157387">原帖链接</a></h2>
 <p><img src="https://uploadfiles.nowcoder.com/files/20190302/4394499_1551502503545_16936e93f737aea4" alt="面试题模块介绍" title="面试题模块介绍"></p>
 <!--more-->
-<p>作者：vippiv
-链接：https://www.nowcoder.com/discuss/157387
-来源：牛客网</p>
-<p>一. Java 基础
-1. JDK 和 JRE 有什么区别？
+<ul>
+<li>作者：vippiv</li>
+<li>链接：https://www.nowcoder.com/discuss/157387</li>
+<li>来源：牛客网</li>
+</ul>
+<p>一. Java 基础</p>
+<pre><code>1. JDK 和 JRE 有什么区别？
+	答：JDK 是 Java Development ToolKit 的缩写，译为Java开发工具包，JRE则是 Java Runtime Environment 的缩写，意思是Java运行时环境，二者是包含关系，另外还有个 JVM (Java虚拟机)，三者是 JDK&gt;JRE&gt;JVM的关系。
+	
 2. == 和 equals 的区别是什么？
+	答：==比较的是两个对象的地址，equals比较的是两个对象的内容。
+	
 3. 两个对象的 hashCode()相同，则 equals()也一定为 true，对吗？
+	答：不对，equals为True，hashCode()一定相同，这是规定，但是hashCode()相同，equals()不一定为Ture。因为hashCode()可以理解为 内存地址%一个自己选的数 后的数，这是有概率相同的。
+
 4. final 在 java 中有什么作用？
+	答：简单而言。被final修饰的类不能继承；被final修饰的方法不能重写；被final修饰的变量不能再次赋值。
+
 5. java 中的 Math.round(-1.5) 等于多少？
+	答：四舍五入
+	```
+	System.out.println(Math.round(1.4));  // 1
+	System.out.println(Math.round(1.5)); // 2
+	System.out.println(Math.round(1.6)); // 2
+	System.out.println(Math.round(-1.4)); // -1
+	System.out.println(Math.round(-1.5)); // -2
+	System.out.println(Math.round(-1.6)); // -2
+	```
+
 6. String 属于基础的数据类型吗？
+	答：不是，String是一个特殊的类，基本数据类型只有八个，LIBBSFDC（李冰冰顺丰DC-long byte bool short float double char）
+
 7. java 中操作字符串都有哪些类？它们之间有什么区别？
+	答：String、StringBuilder、StringBuffer。
+	String内容不可变，其余两个内容可变，StringBuffer线程安全，其余两个线程不安全。
+
 8. String str=&quot;i&quot;与 String str=new String(&quot;i&quot;)一样吗？
+	答：内容一样，地址不一样。
+
 9. 如何将字符串反转？
+	答：1. StringBuffer 的 reverse()。 2. 字符串 toCharArray() 后反向组装。 3. 利用 charAt()遍历各个字符到新串。
+
 10. String 类的常用方法都有那些？
+	答：valueOf()、equals()、match()、toCharArray()、chatAt()、length()、subString()、toLowerCase()...
+
 11. 抽象类必须要有抽象方法吗？
+	答：不是，但有抽象方法的类一定是抽象类。另外，之所以这么问，是因为会有在建造模式中利用`abstract`关键词防止基类被新建的使用情况。
+
 12. 普通类和抽象类有哪些区别？
+	答：抽象类可以有抽象方法，且抽象方法不能是private类型的；抽象类不能被新建只能被继承，且子类必须继承所有抽象方法。
+
 13. 抽象类能使用 final 修饰吗？
+	答：不能，抽象类让子类继承后才能使用，而被final修饰的类不可以被继承，两者矛盾。
+
 14. 接口和抽象类有什么区别？
+	答：共同点：都不能实例化对象，都可以包含抽象方法，而且抽象方法必须被继承的类全部实现。
+	不同点：
+	- 接口要被`实现`，而抽象类是被`继承`。
+	- 可以实现多个接口，但是只能继承一个抽象类。
+	- 接口中的方法没有方法体，抽象类中的抽象方法可有可没有。
+	- 接口中的方法和变量默认都是 public static final修饰的。
+
 15. java 中 IO 流分为几种？
+	答：两类，字节流（InputStream和OutputStream）和字符流（Reader和Writer）。
+
 16. BIO、NIO、AIO 有什么区别？
+	答：Blocked IO阻塞式，NIO非阻塞式。
+
 17. Files的常用方法都有哪些?
-二. 容器
-18. java 容器都有哪些?
+	答：isDir()、isFile()、canRead()、exists()、getAbsolutePath()...
+</code></pre>
+<p>二. 容器</p>
+<pre><code>18. java 容器都有哪些?
+	Map、Set、List、Queue、Tree。
+	HashMap、CurrentHashMap
+	HashSet、LinkedHashSet、TreeSet
+	ArrayList、LinkedList、Vector
+
 19. Collection 和 Collections 有什么区别？
+	答：Collection是一个集合接口，Collections是一个工具类服务于Collection框架。
+
 20. List、Set、Map 之间的区别是什么？
+	答：List允许放入重复的元素，能保证集合的先后顺序；Set不允许放入重复的元素；Map是Key-Value的键值对映射。
+
 21. HashMap 和 Hashtable 有什么区别？
+	答：HashMap线程不安全，速度快。
+
 22. 如何决定使用 HashMap 还是 TreeMap？
+	答：保证存入的顺序用TreeMap。
+
 23. 说一下 HashMap 的实现原理？
+	答：数组加链表
+
 24. 说一下 HashSet 的实现原理？
+	答：计算元素hash值，放入指定位置。
+
 25. ArrayList 和 LinkedList 的区别是什么？
+	答：ArrayList底层是数组，而后者则是基于双向链表实现的。
+
 26. 如何实现数组和 List 之间的转换？
+	答：toArray()方法和Arrays的asList()方法
+
 27. ArrayList 和 Vector 的区别是什么？
+	答：ArrayList线程不安全，扩容每次*1.5；Vector每次*2。
+
 28. Array 和 ArrayList 有何区别？
+	答：Array数组初始化需要指定大小且无法修改，存放的对象只能是一类。
+
 29. 在 Queue 中 poll()和 remove()有什么区别？
+	答：都是删除队列中第一个元素，pool()是新方法，空集合操作时返回null，remove()则会抛出异常。
+
 30. 哪些集合类是线程安全的？
+	答：常用的都不是。带Current的都是，Vector是。
+
 31. 迭代器 Iterator 是什么？
+	答：就是能遍历一个集合的所有元素的方法。
+
 32. Iterator 怎么使用？有什么特点？
+	答：
+
 33. Iterator 和 ListIterator 有什么区别？
+
 34. 怎么确保一个集合不能被修改？
-三. 多线程
+	答： Collections.unmodifiableList(List&lt;? extends T&gt; list)) 
+	比如说返回一个学生的所有课程，把`return courses`换成`return  Collections.unmodifiableList(courses)`
+</code></pre>
+<p>三. 多线程
 35. 并行和并发有什么区别？
 36. 线程和进程的区别？
 37. 守护线程是什么？

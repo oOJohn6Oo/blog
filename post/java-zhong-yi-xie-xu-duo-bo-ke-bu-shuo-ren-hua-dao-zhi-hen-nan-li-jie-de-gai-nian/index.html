@@ -1,0 +1,127 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Java中一些许多博客不说人话、导致很难理解的概念 | T</title>
+<link rel="shortcut icon" href="http://john6.ml/blog//favicon.ico">
+<link rel="stylesheet" href="http://john6.ml/blog//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="http://john6.ml/blog/">
+  <img class="avatar" src="http://john6.ml/blog//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    T
+  </h1>
+  <p class="site-description">
+    Believe that god is fair.
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Java中一些许多博客不说人话、导致很难理解的概念
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-06-29 ·
+              </time>
+              
+            </div>
+            <div class="post-content">
+              <ol>
+<li>对象锁、类锁
+答：synchornized用this是对象锁（普通方法锁也是对象锁），class是类锁（静态方法锁也是类锁），二者不一样，只要多个线程访问同一个锁就会出现阻塞。
+synchronized是对类的当前实例（当前对象）进行加锁，防止其他线程同时访问该类的该实例的所有synchronized块，注意这里是“类的当前实例”， 类的两个不同实例就没有这种约束了。那么static synchronized恰好就是要控制类的所有实例的并发访问，static synchronized是限制多线程中该类的所有实例同时访问jvm中该类所对应的代码块。
+而没有被上锁的方法在这两种情况下仍然可以正常访问。</li>
+<li>service中onStartCommand方法的参数和返回值
+<ul>
+<li>参数：
+<ul>
+<li>Intent：例如new Intent(this, MyService.class)</li>
+<li>Flag：
+<ul>
+<li>0：默认</li>
+<li>START_FLAG_REDELIVERY：重新创建并且没有intent时为此Flag</li>
+<li>START_FLAG_RETRY。重新创建并且有Intent时为此Flag</li>
+</ul>
+</li>
+<li>startID：指明当前服务的唯一ID，与stopSelfResult(int startId)配合使用，stopSelfResult() 可以更安全地根据ID停止服务。</li>
+</ul>
+</li>
+<li>返回值(参考自<a href="https://blog.csdn.net/wangsen927/article/details/82715591">梦想不只是梦和想</a>)：</li>
+<li>START_STICKY     粘性的  service强制杀死后，会尝试重新启动service，不会传递原来的intent（null）</li>
+<li>START_NOT_STICKY 非粘性的 service强制杀死后，不会尝试重新启动service</li>
+<li>START_REDELIVER_INTENT     service强制杀死后，会尝试重新启动service，会传递原来的intent</li>
+<li>START_STICKY_COMPATIBILITY 这个是START_STICKY的兼容版本，不能保证被清理后onStartCommand方法一定会被重新调用</li>
+</ul>
+</li>
+</ol>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="http://john6.ml/blog//post/da-jian-zi-ji-de-shadowrocket-fu-wu-qi">
+              <h3 class="post-title">
+                搭建自己的ShadowRocket服务器
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

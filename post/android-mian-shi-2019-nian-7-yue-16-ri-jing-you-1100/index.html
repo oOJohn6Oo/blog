@@ -1,0 +1,191 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 面试2019年7月16日·景优·11:00 | T</title>
+<link rel="shortcut icon" href="http://john6.ml/blog//favicon.ico">
+<link rel="stylesheet" href="http://john6.ml/blog//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="http://john6.ml/blog/">
+  <img class="avatar" src="http://john6.ml/blog//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    T
+  </h1>
+  <p class="site-description">
+    Believe that god is fair.
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Android 面试2019年7月16日·景优·11:00
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-07-16 ·
+              </time>
+              
+            </div>
+            <div class="post-content">
+              <p>创业公司，一个安卓，硬件交互，烟味刺鼻。</p>
+<!-- more -->
+<h2 id="1-自我介绍">1. 自我介绍。</h2>
+<h2 id="2-实习公司业务">2. 实习公司业务？</h2>
+<h2 id="3-android是自学的是吧">3. Android是自学的是吧？</h2>
+<h2 id="4-上家公司辞职原因">4. 上家公司辞职原因。</h2>
+<h2 id="5-说一下android四大组件">5. 说一下Android四大组件。</h2>
+<pre><code>我的记忆口诀：ABCS，Activity、BroadcastReceiver用于通知、ContentProvider、Service。
+</code></pre>
+<h2 id="6-四大组件的作用">6. 四大组件的作用。</h2>
+<pre><code>Activity用于显示页面与用户交互。
+BroadcastReceiver用于通知。
+ContentProvider夸进程提供数据包括但不限于应用数据库中数据。
+Serivce可用于在后端开启耗时操作，另外他也用于进程间通信。（Service在主线程）
+</code></pre>
+<h2 id="7-那你说一下activity生命周期及各个生命周期应用场景">7. 那你说一下Activity生命周期及各个生命周期应用场景。</h2>
+<p>onCreate、onStart、onResume、onPause、onStop、onDestroy、onRestart。</p>
+<ul>
+<li>onCreate表示Activity正在被创建，一般会在这里调用setContentView方法加载xml视图，调用findViewById方法绑定控件，在生命周期中只会运行一次，一般我们会在这里进行一些初始化操作，例如初始化变量、加载资源、绑定事件。</li>
+<li>onStart表示Activity正在启动，已经能看见但是不能交互。从另外页码跳转回来也会走此生命周期，因此适合判断某些功能特性，例如当前网络状态、GPS是否开启等。</li>
+<li>onResume表示Activity完全展示且可被操控，一般在此开启某些独占性程序，例如：相机、录音机等。</li>
+<li>onPause表示Activity已经被暂停，可见但不可交互，一般在此持久化用户数据、停止动画、停止视频播放等耗时操作，释放独占设备，甚至断开网络连接。</li>
+<li>onStop表示Activity即将停止，此时已完全不可见，可以在此进行耗时的释放操作，在此状态下Activity仍处于内存中，如果在系统内存不够时，系统接下来很快会销毁掉该Activity，在极端情况下，直接 kill Activity 且不执行onDestroy()函数。所以务必在onStop()函数中就清理掉可能引起内存泄露的资源，当然更极端的时系统内存已严重不足，导致系统无法保留该进程的情况下，onStop() 可能都不会被执行。</li>
+<li>onDestroy表示 Activity即将被销毁，如果在onCreate()中定义了后台线程，或者可能引起内存泄露的代码，那就需要在onDestroy()中清理，如，静态对象持有其他Activity的引用，广播注销等操作。</li>
+<li>onRestart正在被重新启动，在原Activity没有销毁时重新要回到该Activity时会回调该方法，紧接着会回调onStart方法，一般在该方法中恢复用户数据。</li>
+</ul>
+<h2 id="8-那你说一下activity四种启动方式">8. 那，你说一下Activity四种启动方式?</h2>
+<ul>
+<li>Standard 经常用的</li>
+<li>SingleTop 栈顶复用</li>
+<li>SingleTask 栈内复用</li>
+<li>SingleInstance 单栈复用</li>
+</ul>
+<h2 id="9-singletop-singletask和standard生命周期区别">9. SingleTop、SingleTask和Standard生命周期区别？</h2>
+<pre><code>onNewIntent方法。
+</code></pre>
+<h2 id="10-服务的启动方式">10. 服务的启动方式？</h2>
+<ul>
+<li>startService，一直存在。</li>
+<li>bindservice，Activity销毁即销毁。</li>
+</ul>
+<h2 id="11-handler原理-作用-造成内存泄漏的原因及处理方法">11. Handler原理、作用、造成内存泄漏的原因及处理方法。</h2>
+<ul>
+<li>ThreadLocal中的Looper循环遍历MessageQueue取出Message，Handler负责发送Message到MessageQueue。</li>
+<li>作用是可以实现线程间通讯。</li>
+<li>内存泄漏原因：非静态内部类会隐性持有外部类的引用.在Message发送过程中,引用了Handler对象,而Handler又隐性持有外部Activity对象，导致GC无法回收Activity对象，从而造成内存泄漏。</li>
+<li>处理方法：①采用弱引用持有。②使用 <code>new Hander(new HandlerCallBack(){···})</code>。</li>
+</ul>
+<h2 id="12-service在主线程还是在子线程">12. Service在主线程还是在子线程？</h2>
+<pre><code>主线程
+</code></pre>
+<h2 id="13-怎样在service中进行耗时操作">13. 怎样在Service中进行耗时操作？</h2>
+<ul>
+<li>开子线程</li>
+<li>使用IntentService</li>
+</ul>
+<h2 id="14-thread和handlerthread区别">14. Thread和HandlerThread区别？</h2>
+<pre><code>HandlerThread自带一个独有的Looper。
+</code></pre>
+<h2 id="15-looper一直在遍历messages为什么app不会卡死">15. Looper一直在遍历Messages为什么APP不会卡死？</h2>
+<h2 id="16-主线程looper的主要作用是什么">16. 主线程Looper的主要作用是什么？</h2>
+<pre><code>可以对消息进行处理
+</code></pre>
+<h2 id="17-说一下进程间通讯">17. 说一下进程间通讯。</h2>
+<ul>
+<li>ContentProvider</li>
+<li>BroadcastReceiver</li>
+</ul>
+<h2 id="18-什么是进程-什么是线程">18. 什么是进程、什么是线程？</h2>
+<ul>
+<li>进程在Android上体现为<code>每个APP</code></li>
+<li>线程是进程的一部分，体现为每个new出来的Thread和负责更新UI的主线程。</li>
+</ul>
+<h2 id="19-说一下线程池">19. 说一下线程池。</h2>
+<h2 id="20-我们为什么要用线程池">20. 我们为什么要用线程池？</h2>
+<h2 id="21-线程池里面的核心线程数量和最大线程数量分别是多少">21. 线程池里面的核心线程数量和最大线程数量分别是多少？</h2>
+<h2 id="22-anr和oom区别">22. ANR和OOM区别。</h2>
+<h2 id="23-广播我们通常用于干嘛">23. 广播我们通常用于干嘛？</h2>
+<pre><code>监听消息（接收系统状态等）、发送消息（大喇叭）。
+</code></pre>
+<h2 id="24-那你说一下线程造成死锁的原因">24. 那你说一下线程造成死锁的原因？</h2>
+<h2 id="listview造成数据错乱的原因">ListView造成数据错乱的原因？</h2>
+<h2 id="如何处理scrollview嵌套recyclerview造成的recyclerview显示条目不完整问题">如何处理ScrollView嵌套RecyclerView造成的RecyclerView显示条目不完整问题。</h2>
+<pre><code>1. 手动测量
+2. 使用NestedScrollView
+</code></pre>
+<h2 id="你会从哪些方面对android进行优化">你会从哪些方面对Android进行优化？</h2>
+<pre><code>1. 包的体积。
+2. 
+</code></pre>
+<h2 id="有重写过onmeasure方法吗">有重写过onMeasure方法吗？</h2>
+<pre><code>有，当时写一个只有最大高度的 RecyclerView 时重写过，在 item &lt;= 5 时不对高度进行处理，item &gt;5时使高度置为 item.height * 5</code></pre>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="http://john6.ml/blog//post/android-mian-shi-2019-nian-7-yue-15-ri-avazu1500">
+              <h3 class="post-title">
+                Android 面试（2019年7月15日·Avazu·15:00）
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

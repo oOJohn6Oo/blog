@@ -1,0 +1,157 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android性能优化 | T</title>
+<link rel="shortcut icon" href="http://john6.ml/blog//favicon.ico">
+<link rel="stylesheet" href="http://john6.ml/blog//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="http://john6.ml/blog/">
+  <img class="avatar" src="http://john6.ml/blog//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    T
+  </h1>
+  <p class="site-description">
+    Believe that god is fair.
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Android性能优化
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · 2019-07-21 ·
+              </time>
+              
+            </div>
+            <div class="post-content">
+              <h2 id="1-android的渲染机制">1. Android的渲染机制</h2>
+<p>首先，使用户感受到不卡顿需要保持FPS最低60，FPS是 Frames Per Second的缩写，意味着我们每一帧只有<strong>1000ms / 60f</strong> 约等于16ms的时间处理所有的任务。
+<img src="http://hukai.me/images/layout_three_steps.png" alt="XML加载流程">
+通常来说，Android需要把XML布局文件转换成GPU能够识别并绘制的对象。这个操作是在DisplayList的帮助下完成的。DisplayList持有所有将要交给GPU绘制到屏幕上的数据信息。</p>
+<p>在某个View第一次需要被渲染时，DisplayList会因此而被创建，当这个View要显示到屏幕上时，我们会执行GPU的绘制指令来进行渲染。如果你在后续有执行类似移动这个View的位置等操作而需要再次渲染这个View时，我们就仅仅需要额外操作一次渲染指令就够了。然而如果你修改了View中的某些可见组件，那么之前的DisplayList就无法继续使用了，我们需要回头重新创建一个DisplayList并且重新执行渲染指令并更新到屏幕上。</p>
+<p>需要注意的是：任何时候View中的绘制内容发生变化时，都会重新执行创建DisplayList，渲染DisplayList，更新到屏幕上等一系列操作。这个流程的表现性能取决于你的View的复杂程度，View的状态变化以及渲染管道的执行性能。举个例子，假设某个Button的大小需要增大到目前的两倍，在增大Button大小之前，需要通过父View重新计算并摆放其他子View的位置。修改View的大小会触发整个HierarcyView的重新计算大小的操作。如果是修改View的位置则会触发HierarchView重新计算其他View的位置。如果布局很复杂，这就会很容易导致严重的性能问题。我们需要尽量减少Overdraw。
+<img src="http://hukai.me/images/gpu_cpu_rasterization.png" alt="Android图形绘制流程">
+首先CPU计算出UI组件对应的polygons(多边形)、和texture(纹理)，然后将计算结果转移到GPU
+GPU则需要对这些结果进行栅格化渲染</p>
+<h3 id="优化方法">优化方法</h3>
+<p>一般有<code>五</code>点：</p>
+<ul>
+<li>减少布局层次，例如多使用ConstraintLayout
+但是有人指出ConstraintLayout性能在简单布局的情况下比其他布局要差，这是对的，因此特别简单的还是建议使用线性布局或者相对布局。</li>
+<li>重用布局文件，减少不必要的代码
+顾名思义就是写一个xml然后在其余的xml布局内使用<code>include</code>标签包含进去，但是为了消除include产生的层级增加的影响，我们还可以使用<code>merge</code>标签。</li>
+<li>合理使用style</li>
+<li>使用ViewStub来完成那些只需要在特定情况下显示的布局
+满足XX情况显示ABCD，满足XX情况显示ACD，使用<code>Android:visibility</code>属性固然可以达到效果，但性能不佳，因为被隐藏的控件仍会在我们的布局当中，Android仍会去解析、绘制它们。
+所以，出现了<code>ViewStub</code>懒加载布局，类似<code>include</code>标签<pre><code class="language-Java">&lt;ViewStub
+	android:id=&quot;@+id/view_stub
+	android:layout_width=&quot;warp_content&quot;
+	android:layout_height=&quot;warp_content&quot;
+	android:layout=&quot;@layout/display2&quot;/&gt;
+</code></pre>
+需要显示时再控制其显示<pre><code>	ViewStub vs = findViewById(R.id.view_stub);
+	View v = vs.inflate();
+	Button btn = v.findViewById(R.id.btn);
+</code></pre>
+</li>
+<li>合理使用分割线布局
+一般我们都会直接使用view来作为分隔符，比如recyclerview里面直接在item的xml布局最底部加上，这种应该是没有办法的，ListView倒是自带divider。但是在普通的布局内，分隔线可以使用<code>LinearLayoutCompat</code>代替。前提是需要线性布局。</li>
+</ul>
+<h2 id="2内存与gc">2.内存与GC</h2>
+<ol>
+<li>内存抖动
+大量的对象同时被创建，又全部被回收导致。
+- bitmap???(1. 缓存到内存的缩放比例；2： 编码格式；3. 使用更小的图片。 )</li>
+<li>内存泄漏
+有对象没有被释放导致，在Android中最常见的且比较严重的是Activity没有能被回收掉。
+查。</li>
+</ol>
+<h2 id="3-电量优化">3. 电量优化</h2>
+<pre><code>- 网络操作尽量一次完成，调用接口不要太频繁。
+- 上传信息、下载更新等操作，可以的话等充电的时候或者连接上WIFI的时候或者用户主动要求的时候再进行。
+</code></pre>
+<h2 id="4-安装包大小优化">4. 安装包大小优化</h2>
+<pre><code>- 代码混淆。使用ProGuard代码混淆器工具，它包括压缩、优化、混淆等功能；
+</code></pre>
+<ul>
+<li>资源优化。比如使用Android Lint删除冗余资源，资源文件最少化等；</li>
+<li>图片优化。比如利用AAPT工具对PNG格式的图片做压缩处理，降低图片色彩位数等；
+<ul>
+<li>避免重复功能的库，使用WebP图片格式等；</li>
+<li>插件化。比如功能模块放在服务器上，按需下载，可以减少安装包大小。</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="http://john6.ml/blog//post/android-mian-shi-2019-nian-7-yue-17-ri-zhi-da-1030">
+              <h3 class="post-title">
+                Android面试（2019年7月17日·直达·10:30）
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
